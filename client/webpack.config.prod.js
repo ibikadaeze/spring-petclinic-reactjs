@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     // REMOVED 'mode' FROM HERE TO MATCH WEBPACK 2/3 RULES
-    entry: './src/index.tsx', 
+    entry: './src/main.tsx', 
     output: {
         path: path.join(__dirname, 'public', 'dist'),
         filename: 'bundle.js',
