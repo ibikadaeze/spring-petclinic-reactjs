@@ -1,0 +1,81 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:20-alpine'
+            args '-v /var/lib/jenkins/.npm:/root/.npm'
+        }
+    }
+
+    environment {
+        FRONTEND_HOST = '192.168.56.11'
+        FRONTEND_USER = 'vagrant'
+        FRONTEND_URL = 'http://192.168.56.11/'
+        BACKEND_HEALTH_URL = 'http://192.168.56.12:9966/petclinic/actuator/health'
+        NPM_CACHE_DIR = '/root/.npm'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                checkout scm
+                sh 'python3 scripts/build_frontend.py --step install --with-npm-cache'
+            }
+        }
+
+        stage('Parallel: Lint & Audit') {
+            parallel {
+                stage('Lint') {
+                    steps {
+                        sh 'python3 scripts/build_frontend.py --step lint'
+                    }
+                }
+                stage('Security Audit') {
+                    steps {
+                        sh 'python3 scripts/build_frontend.py --step audit'
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                checkout scm
+                sh 'python3 scripts/build_frontend.py --step build'
+            }
+        }
+
+        stage('Archive Frontend') {
+            steps {
+                archiveArtifacts artifacts: 'client/public/dist/**', fingerprint: true, allowEmptyArchive: true
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                checkout scm
+                sh 'python3 scripts/deploy_frontend.py'
+            }
+        }
+
+        stage('Parallel: Smoke & E2E') {
+            parallel {
+                stage('Smoke Test') {
+                    steps {
+                        sh 'python3 scripts/smoke_frontend.py'
+                    }
+                }
+                stage('Selenium E2E Test') {
+                    steps {
+                        sh 'python3 scripts/selenium_setup.py'
+                    }
+                }
+            }
+        }
+    }
+}
