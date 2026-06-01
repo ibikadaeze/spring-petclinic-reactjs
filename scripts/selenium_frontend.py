@@ -9,8 +9,8 @@ from webdriver_manager.core.os_manager import ChromeType
 # 1. Initialize standard Chrome Options
 chrome_options = Options()
 
-# 2. Point explicitly to your active Snap Chromium binary installation path
-chrome_options.binary_location = "/snap/bin/chromium"
+# 2. Point explicitly to your active  Chromium binary installation path
+chrome_options.binary_location = "/usr/bin/chromium"
 
 # 3. Enforce strict background configurations for headless CI node environments
 chrome_options.add_argument("--headless=new")
