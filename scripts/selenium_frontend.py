@@ -1,27 +1,25 @@
 #!/usr/bin/env python3
 import os
-import sys
 from selenium import webdriver
-from selenium.webdriver.chromium.options import ChromiumOptions
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-# 1. Instantiate specialized Chromium configurations
-chromium_options = ChromiumOptions()
+# Get current workspace directory path
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# 2. Hardcode the absolute executable binary location mapping to Snap
-chromium_options.binary_location = "/snap/bin/chromium"
+chrome_options = Options()
+# Point straight to the uncontained portable chrome binary we just downloaded
+chrome_options.binary_location = f"{base_dir}/chrome-linux64/chrome"
 
-# 3. Apply standard background processing parameters for headless environments
-chromium_options.add_argument("--headless=new")
-chromium_options.add_argument("--no-sandbox")
-chromium_options.add_argument("--disable-dev-shm-usage")
-chromium_options.add_argument("--remote-allow-origins=*")
+chrome_options.add_argument("--headless=new")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--remote-allow-origins=*")
 
-# 4. Initialize using explicit binary binding
-driver = webdriver.Chrome(options=chromium_options)
+# Point straight to the uncontained matching driver binary
+chrome_service = Service(executable_path=f"{base_dir}/chromedriver-linux64/chromedriver")
+
+driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
 def require_env(name):
     value = os.environ.get(name)
