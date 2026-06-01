@@ -14,5 +14,11 @@ echo "Deploying frontend build to Nginx..."
 ssh "${FRONTEND_USER}@${FRONTEND_HOST}" "
   sudo rm -rf /var/www/html/*
   sudo tar -xzf /tmp/frontend-build.tar.gz -C /var/www/html
+  
+  # ADD THESE TWO LINES TO FIX THE 403 FORBIDDEN ERROR
+  echo 'Adjusting folder permissions for Nginx...'
+  sudo chown -R www-data:www-data /var/www/html
+  sudo chmod -R 755 /var/www/html
+  
   sudo systemctl restart nginx
 "
