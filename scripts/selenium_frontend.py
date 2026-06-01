@@ -17,6 +17,7 @@ chrome_options.binary_location = "/snap/bin/chromium"
 chrome_options.add_argument("--headless=new") # Required for headless CI nodes
 chrome_options.add_argument("--no-sandbox")   # Bypasses Linux kernel security restrictions
 chrome_options.add_argument("--disable-dev-shm-usage") # Prevents resource allocation crashes
+chrome_options.add_argument("--remote-allow-origins=*")
 
 # 3. Pass options into your active driver initialization statement
 driver = webdriver.Chrome(options=chrome_options)
