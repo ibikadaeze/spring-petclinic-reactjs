@@ -11,18 +11,10 @@ echo "Creating clean python virtual workspace..."
 python3 -m venv .venv-selenium
 source .venv-selenium/bin/activate
 
-echo "Installing Selenium..."
+echo "Installing Selenium and Automated Driver Managers..."
 python3 -m pip install --upgrade pip
-python3 -m pip install selenium==4.21.0 pytest
-
-# UPGRADED TO CURL WITH RESILIENT DOWNLOADING FLAGS
-echo "Downloading portable background Chrome engine..."
-curl -L -o chrome-linux64.zip https://googleapis.com
-curl -L -o chromedriver-linux64.zip https://googleapis.com
-
-echo "Extracting engines..."
-unzip -q chrome-linux64.zip
-unzip -q chromedriver-linux64.zip
+# ADDED webdriver-manager HERE
+python3 -m pip install selenium==4.21.0 webdriver-manager pytest
 
 echo "Purging stale background zombie processes..."
 pkill -f chromium || true

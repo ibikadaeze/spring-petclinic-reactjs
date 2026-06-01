@@ -3,23 +3,21 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-
-# Get current workspace directory path
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from webdriver_manager.chrome import ChromeDriverManager
 
 chrome_options = Options()
-# Point straight to the uncontained portable chrome binary we just downloaded
-chrome_options.binary_location = f"{base_dir}/chrome-linux64/chrome"
 
+# 1. Enforce strict background processing parameters for headless Jenkins VMs
 chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--remote-allow-origins=*")
 
-# Point straight to the uncontained matching driver binary
-chrome_service = Service(executable_path=f"{base_dir}/chromedriver-linux64/chromedriver")
+# 2. Let ChromeDriverManager automatically fetch the matching binary safely
+service = Service(ChromeDriverManager().install())
 
-driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+# 3. Initialize your clean driver instance
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 def require_env(name):
     value = os.environ.get(name)
