@@ -39,6 +39,18 @@ module.exports = {
                     fallback: 'style-loader',
                     use: ['css-loader', 'less-loader']
                 })
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif|svg|eot|ttf|woff|woff2)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 10000, // Inline assets smaller than 10kB as DataURLs
+                            name: 'assets/[name].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     },
