@@ -17,21 +17,22 @@ scp client/public/index.html "${FRONTEND_USER}@${FRONTEND_HOST}:/tmp/index.html"
 echo "Deploying frontend build to Nginx..."
 ssh "${FRONTEND_USER}@${FRONTEND_HOST}" "
   sudo rm -rf /var/www/html/*
-  sudo tar -xzf /tmp/frontend-build.tar.gz -C /var/www/html
   
-  # Copy index.html to the web root if it was extracted to /tmp
+  # Create the missing dist folder explicitly
+  sudo mkdir -p /var/www/html/dist
+  
+  # Extract the bundle assets straight into the dist folder
+  sudo tar -xzf /tmp/frontend-build.tar.gz -C /var/www/html/dist
+  
+  # Move your index.html back up to the absolute root so it can load first
   if [ -f /tmp/index.html ]; then
     sudo mv /tmp/index.html /var/www/html/index.html
+  else
+    sudo mv /var/www/html/dist/index.html /var/www/html/index.html
   fi
 
   echo 'Enforcing path traversal and folder permissions...'
-  # Fix parent directory visibility issues
   sudo chmod 755 /var /var/www /var/www/html
-  
-  # Ensure all contents inside the web root are readable
   sudo chown -R www-data:www-data /var/www/html
-  sudo find /var/www/html -type d -exec chmod 755 {} +
-  sudo find /var/www/html -type f -exec chmod 644 {} +
-  
   sudo systemctl restart nginx
 "
