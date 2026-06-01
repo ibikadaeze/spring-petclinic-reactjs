@@ -4,7 +4,9 @@ set -euo pipefail
 cd client
 
 echo "Installing frontend dependencies..."
-npm install
+# --legacy-peer-deps is used to bypass peer dependency conflicts that may arise with newer versions of npm.
+npm install --legacy-peer-deps
+
 
 echo "Running frontend dependency security scan..."
 npm audit --audit-level=critical
