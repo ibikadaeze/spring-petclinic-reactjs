@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-    entry: './src/main.tsx', // Your true entry point file path
+    entry: './src/main.tsx', 
     output: {
         path: path.join(__dirname, 'public', 'dist'),
         filename: 'bundle.js',
@@ -17,14 +17,6 @@ module.exports = {
     },
     module: {
         rules: [
-            // COMMENTED OUT OR REMOVED TSLINT-LOADER TO PREVENT THE VERSION CRASH
-            /*
-            {
-                test: /\.tsx?$/,
-                enforce: 'pre', 
-                loader: 'tslint-loader'
-            },
-            */
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
@@ -39,6 +31,14 @@ module.exports = {
                     fallback: 'style-loader',
                     use: 'css-loader'
                 })
+            },
+            // ADDED THIS RULE TO PROCESS THE .less PETCLINIC STYLESHEETS
+            {
+                test: /\.less$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'less-loader']
+                })
             }
         ]
     },
@@ -48,7 +48,6 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        // You can leave the rest of the plugins array untouched
         new ExtractTextPlugin('styles.css')
     ]
 };
