@@ -16,4 +16,4 @@ echo "Running frontend lint checks if available..."
 npm run lint --if-present
 
 echo "Building frontend..."
-npm run build
+npm run build:prod
