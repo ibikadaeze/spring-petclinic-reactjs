@@ -3,8 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-    // REMOVED 'mode' FROM HERE TO MATCH WEBPACK 2/3 RULES
-    entry: './src/main.tsx', 
+    entry: './src/main.tsx', // Your true entry point file path
     output: {
         path: path.join(__dirname, 'public', 'dist'),
         filename: 'bundle.js',
@@ -18,11 +17,14 @@ module.exports = {
     },
     module: {
         rules: [
+            // COMMENTED OUT OR REMOVED TSLINT-LOADER TO PREVENT THE VERSION CRASH
+            /*
             {
                 test: /\.tsx?$/,
                 enforce: 'pre', 
                 loader: 'tslint-loader'
             },
+            */
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
@@ -43,14 +45,7 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new webpack.LoaderOptionsPlugin({
-            options: {
-                tslint: {
-                    emitErrors: true,
-                    failOnHint: true
-                }
-            }
-        }),
+        // You can leave the rest of the plugins array untouched
         new ExtractTextPlugin('styles.css')
     ]
 };
