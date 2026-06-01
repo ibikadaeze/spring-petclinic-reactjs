@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "Wiping physical node caches to clear Jenkins memory..."
+rm -rf node_modules package-lock.json
+
 cd client
 
 echo "Installing frontend dependencies..."
