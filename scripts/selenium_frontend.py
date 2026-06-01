@@ -2,31 +2,26 @@
 import os
 import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# 1. Instantiate the Chrome options builder configuration
-chrome_options = Options()
-# POINT EXPLICITLY TO YOUR NEW SNAP CHROMIUM BINARY
-chrome_options.binary_location = "/snap/bin/chromium"
+# 1. Instantiate specialized Chromium configurations
+chromium_options = ChromiumOptions()
 
-# 2. Tell Chromium to use the local workspace directory for user data (CRITICAL FOR SNAP BUGS)
-workspace_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-chrome_options.add_argument(f"--user-data-dir={workspace_dir}/.chrome-user-data")
-chrome_options.add_argument(f"--data-path={workspace_dir}/.chrome-data")
-chrome_options.add_argument(f"--disk-cache-dir={workspace_dir}/.chrome-cache")
+# 2. Hardcode the absolute executable binary location mapping to Snap
+chromium_options.binary_location = "/snap/bin/chromium"
 
-#  Enforce strict background headless processing rules
-chrome_options.add_argument("--headless=new") # Required for headless CI nodes
-chrome_options.add_argument("--no-sandbox")   # Bypasses Linux kernel security restrictions
-chrome_options.add_argument("--disable-dev-shm-usage") # Prevents resource allocation crashes
-chrome_options.add_argument("--remote-allow-origins=*")
+# 3. Apply standard background processing parameters for headless environments
+chromium_options.add_argument("--headless=new")
+chromium_options.add_argument("--no-sandbox")
+chromium_options.add_argument("--disable-dev-shm-usage")
+chromium_options.add_argument("--remote-allow-origins=*")
 
-# 3. Pass options into your active driver initialization statement
-driver = webdriver.Chrome(options=chrome_options)
+# 4. Initialize using explicit binary binding
+driver = webdriver.Chrome(options=chromium_options)
 
 def require_env(name):
     value = os.environ.get(name)
