@@ -1,73 +1,60 @@
 const path = require('path');
 const webpack = require('webpack');
-
-const port = process.env.PORT || 3000;
-
-const entries = [
-  './src/main.tsx'
-];
-
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  devtool: 'source-map',
-  entry: entries,
-  output: {
-    path: path.join(__dirname, 'public/dist/'),
-    filename: 'bundle.js',
-    publicPath: '/dist/'
-    /* redbox-react/README.md */
-    // ,devtoolModuleFilenameTemplate: '/[absolute-resource-path]'
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production'),
-      },
-       __API_SERVER_URL__: JSON.stringify('http://localhost:8080')
-    })
-  ],
-  resolve: {
-    extensions: ['', '.ts', '.tsx', '.js']
-  },
-  resolveLoader: {
-    'fallback': path.join(__dirname, 'node_modules')
-  },
-  module: {
-    preLoaders: [
-      {
-        test: /\.tsx?$/,
-        loader: 'tslint',
-        include: path.join(__dirname, 'src')
-      }
-    ],
-    loaders: [
-      {
-        test: /\.css$/,
-        loader: 'style!css'
-      },
-      {
-        test: /\.less$/,
-        loader: 'style!css!less',
-        include: path.join(__dirname, 'src/styles')
-      },
-      {
-        test: /\.(png|jpg)$/,
-        loader: 'url?limit=25000'
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file?name=public/fonts/[name].[ext]'
-      },
-
-      {
-        test: /\.tsx?$/,
-        loader: 'babel!ts',
-        include: path.join(__dirname, 'src')
-      }
+    mode: 'production', // Explicitly set for modern Webpack engines
+    entry: './src/index.tsx', // Adjust to your actual entry path if different
+    output: {
+        path: path.join(__dirname, 'public', 'dist'),
+        filename: 'bundle.js',
+        publicPath: '/dist/'
+    },
+    resolve: {
+        // FIXED: Removed the empty string "" from extensions array
+        extensions: ['.js', '.ts', '.tsx'] 
+    },
+    resolveLoader: {
+        // FIXED: Removed the obsolete 'fallback' property entirely
+        modules: ['node_modules']
+    },
+    module: {
+        // FIXED: Merged 'preLoaders' and 'loaders' into modern 'rules'
+        rules: [
+            {
+                test: /\.tsx?$/,
+                enforce: 'pre', // Converts 'preLoaders' logic safely
+                loader: 'tslint-loader'
+            },
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })
+            }
+        ]
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('production')
+            }
+        }),
+        // FIXED: Wrapped custom legacy properties into LoaderOptionsPlugin
+        new webpack.LoaderOptionsPlugin({
+            options: {
+                tslint: {
+                    emitErrors: true,
+                    failOnHint: true
+                }
+            }
+        }),
+        new ExtractTextPlugin('styles.css')
     ]
-  },
-  tslint: {
-    emitErrors: true,
-    failOnHint: true
-  }
 };
