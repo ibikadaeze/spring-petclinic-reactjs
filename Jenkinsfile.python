@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS 20'
+    }
+
+    environment {
+        FRONTEND_HOST = '192.168.56.11'
+        FRONTEND_USER = 'vagrant'
+        FRONTEND_URL = 'http://192.168.56.11/'
+        BACKEND_HEALTH_URL = 'http://192.168.56.12:9966/petclinic/actuator/health'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'python3 scripts/build_frontend.py'
+            }
+        }
+
+        stage('Archive Frontend') {
+            steps {
+                archiveArtifacts artifacts: 'client/public/dist/**', fingerprint: true, allowEmptyArchive: true
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh 'python3 scripts/deploy_frontend.py'
+            }
+        }
+
+        stage('Smoke Test Frontend') {
+            steps {
+                sh 'python3 scripts/smoke_frontend.py'
+            }
+        }
+
+        stage('Selenium E2E Test') {
+            steps {
+                sh 'python3 scripts/selenium_setup.py'
+            }
+        }
+    }
+}
