@@ -5,7 +5,7 @@ set -euo pipefail
 : "${FRONTEND_USER:?FRONTEND_USER is required}"
 
 echo "Packaging frontend build..."
-tar -czf frontend-build.tar.gz -C client/build .
+tar -czf frontend-build.tar.gz -C client/public/dist .
 
 echo "Copying frontend build to ${FRONTEND_HOST}..."
 scp frontend-build.tar.gz "${FRONTEND_USER}@${FRONTEND_HOST}:/tmp/frontend-build.tar.gz"

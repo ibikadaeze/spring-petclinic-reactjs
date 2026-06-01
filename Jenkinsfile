@@ -27,7 +27,7 @@ pipeline {
 
         stage('Archive Frontend') {
             steps {
-                archiveArtifacts artifacts: 'client/build/**', fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: 'client/build/public/dist/**', fingerprint: true, allowEmptyArchive: true
             }
         }
 
