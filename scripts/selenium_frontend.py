@@ -3,10 +3,23 @@ import os
 import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+# 1. Instantiate the Chrome options builder configuration
+chrome_options = Options()
+# POINT EXPLICITLY TO YOUR NEW SNAP CHROMIUM BINARY
+chrome_options.binary_location = "/snap/bin/chromium"
+
+# 2. Enforce strict background headless processing rules
+chrome_options.add_argument("--headless=new") # Required for headless CI nodes
+chrome_options.add_argument("--no-sandbox")   # Bypasses Linux kernel security restrictions
+chrome_options.add_argument("--disable-dev-shm-usage") # Prevents resource allocation crashes
+
+# 3. Pass options into your active driver initialization statement
+driver = webdriver.Chrome(options=chrome_options)
 
 def require_env(name):
     value = os.environ.get(name)
