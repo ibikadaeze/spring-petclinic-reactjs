@@ -5,6 +5,7 @@
     "noImplicitAny": false,
     "preserveConstEnums": true,
     "removeComments": true,
+    "skipLibCheck": true, 
     "target": "ES6",
     "allowJs": true,
     "outDir": "public/dist",
