@@ -7,16 +7,19 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 chrome_options = Options()
 
-# 1. Enforce strict background processing parameters for headless Jenkins VMs
+# FORCE THE DOWNLOADED MANAGER DRIVER TO USE YOUR INSTALLED CHROMIUM BINARY
+chrome_options.binary_location = "/snap/bin/chromium"
+
+# Standard headless configurations for background server execution
 chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--remote-allow-origins=*")
 
-# 2. Let ChromeDriverManager automatically fetch the matching binary safely
+# Initialize the automated manager service hook
 service = Service(ChromeDriverManager().install())
 
-# 3. Initialize your clean driver instance
+# Boot the driver with options explicitly linking to the Snap Chromium binary
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 def require_env(name):
