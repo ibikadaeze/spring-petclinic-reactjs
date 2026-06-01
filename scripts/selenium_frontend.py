@@ -13,7 +13,13 @@ chrome_options = Options()
 # POINT EXPLICITLY TO YOUR NEW SNAP CHROMIUM BINARY
 chrome_options.binary_location = "/snap/bin/chromium"
 
-# 2. Enforce strict background headless processing rules
+# 2. Tell Chromium to use the local workspace directory for user data (CRITICAL FOR SNAP BUGS)
+workspace_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+chrome_options.add_argument(f"--user-data-dir={workspace_dir}/.chrome-user-data")
+chrome_options.add_argument(f"--data-path={workspace_dir}/.chrome-data")
+chrome_options.add_argument(f"--disk-cache-dir={workspace_dir}/.chrome-cache")
+
+#  Enforce strict background headless processing rules
 chrome_options.add_argument("--headless=new") # Required for headless CI nodes
 chrome_options.add_argument("--no-sandbox")   # Bypasses Linux kernel security restrictions
 chrome_options.add_argument("--disable-dev-shm-usage") # Prevents resource allocation crashes
