@@ -7,6 +7,8 @@ echo "Installing frontend dependencies..."
 # --legacy-peer-deps is used to bypass peer dependency conflicts that may arise with newer versions of npm.
 #The --ignore-scripts flag forces npm to skip the dead typings install step entirely, allowing the build process to proceed seamlessly.
 npm install --legacy-peer-deps --ignore-scripts
+#THIS LINE install the missing CLI utility automatically
+npm install --save-dev webpack-cli --legacy-peer-deps
 
 
 echo "Running frontend dependency security scan..."
